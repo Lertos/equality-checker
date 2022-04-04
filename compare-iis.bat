@@ -28,6 +28,8 @@ echo  [4] Supply multiple absolute paths
 echo  [5] Supply a folder and compare all files against directories given in config.bat
 echo  [6] == QUIT ==
 
+call :sr_resetError
+
 choice /C 123456 /N
 
 cls
@@ -82,17 +84,7 @@ for /F "usebackq tokens=*" %%A in ("file_list.txt") do (
 )
 
 REM Show all files that weren't found
-if not "%notFoundList%"=="" (
-    echo.
-    echo ---------------------------------------------
-    call :colorEcho 0c " FILES THAT WERE NOT FOUND"
-    echo.
-    echo ---------------------------------------------
-    echo.
-    for %%B in (%notFoundList%) do (
-        echo %%B
-    )
-)
+call :sr_showFilesNotFound
 
 REM Show the resulting message
 if %index% LSS 2 ( goto :sr_notEnoughExistingFiles ) else ( goto :sr_filesAreSame )
@@ -105,8 +97,32 @@ REM ----------------------------
 :supplySingleFile
 
 REM Show the user the paths they are comparing
-echo PATHS THAT ARE BEING COMPARED:
 echo.
+echo ---------------------------------------------
+call :colorEcho 0e " PARENT PATHS THAT ARE BEING COMPARED"
+echo.
+echo ---------------------------------------------
+echo.
+
+for %%A in (%iisPaths%) do echo  %%A
+
+echo.
+echo ---------------------------------------------
+call :colorEcho 0b " [Q] Supply a file name"
+echo.
+echo ---------------------------------------------
+echo.
+
+set /p singleFileName=File name (no leading \; include extension): 
+
+set index=0
+for %%A in (%iisPaths%) do call :sr_checkIfExists %%A\%singleFileName%
+
+REM Show all files that weren't found
+call :sr_showFilesNotFound
+
+REM Show the resulting message
+if %index% LSS 2 ( goto :sr_notEnoughExistingFiles ) else ( goto :sr_filesAreSame )
 
 
 REM ----------------------------
@@ -115,8 +131,8 @@ REM ----------------------------
 
 :supplyAbsolutePaths
 
-REM Show the user the paths they are comparing
-echo PATHS THAT ARE BEING COMPARED:
+REM Ask for all paths desired
+echo.
 echo.
 
 
@@ -175,12 +191,26 @@ REM SUBROUTINE TO SHOW THERE ARE NOT ENOUGH EXISTING FILES TO COMPARE
 :sr_notEnoughExistingFiles
     echo.
     echo ---------------------------------------------
-    echo.
     call :colorEcho 0c " There are not enough existing files to compare"
-    echo.
     echo.
     echo ---------------------------------------------
     goto :sr_mainMenuOrQuit
+
+REM SUBROUTINE TO SHOW THE FILES THAT WERE NOT FOUND
+:sr_showFilesNotFound
+    if not "%notFoundList%"=="" (
+        echo.
+        echo ---------------------------------------------
+        call :colorEcho 0c " FILES THAT WERE NOT FOUND"
+        echo.
+        echo ---------------------------------------------
+        echo.
+        for %%B in (%notFoundList%) do (
+            echo  %%B
+        )
+    )
+    set "notFoundList="
+exit /b
 
 REM SUBROUTINE TO GO BACK TO MAIN MENU OR QUIT
 :sr_mainMenuOrQuit
