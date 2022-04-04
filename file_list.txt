@@ -1,0 +1,2 @@
+myFolder\myFile.txt
+myFolder2\myFile.txt
