@@ -133,7 +133,25 @@ REM ----------------------------
 
 REM Ask for all paths desired
 echo.
+echo ---------------------------------------------
+call :colorEcho 0b " Supply all desired absolute paths and press enter [q] when done"
 echo.
+echo ---------------------------------------------
+echo.
+
+set absoluteFileInput=
+set absoluteFilePaths=
+
+:absoluteFileInputLoop
+set /p absoluteFileInput=File name (include extension): 
+
+if not %absoluteFileInput%==q ( set absoluteFilePaths=%absoluteFilePaths%;%absoluteFileInput% & goto :absoluteFileInputLoop )
+
+set index=0
+for %%A in (%absoluteFilePaths%) do call :sr_checkIfExists %%A
+
+REM Show the resulting message
+if %index% LSS 2 ( goto :sr_notEnoughExistingFiles ) else ( goto :sr_filesAreSame )
 
 
 REM ----------------------------
