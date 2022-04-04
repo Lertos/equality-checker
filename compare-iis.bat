@@ -25,17 +25,15 @@ echo  [1] Use absolute paths inside 'file_list.txt'
 echo  [2] Use paths inside 'file_list.txt' with parent directories given in config.bat
 echo  [3] Supply a single file name and use parent directories given in config.bat
 echo  [4] Supply multiple absolute paths
-echo  [5] Supply a folder and compare all files against directories given in config.bat
-echo  [6] == QUIT ==
+echo  [5] == QUIT ==
 
 call :sr_resetError
 
-choice /C 123456 /N
+choice /C 12345 /N
 
 cls
 
-if errorlevel == 6 exit
-if errorlevel == 5 goto :checkEntireFolder
+if errorlevel == 5 exit
 if errorlevel == 4 goto :supplyAbsolutePaths
 if errorlevel == 3 goto :supplySingleFile
 if errorlevel == 2 goto :fileConfigPaths
@@ -152,23 +150,6 @@ for %%A in (%absoluteFilePaths%) do call :sr_checkIfExists %%A
 
 REM Show the resulting message
 if %index% LSS 2 ( goto :sr_notEnoughExistingFiles ) else ( goto :sr_filesAreSame )
-
-
-REM ----------------------------
-REM checkEntireFolder
-REM ----------------------------
-
-:checkEntireFolder
-
-REM Show the user the paths they are comparing
-echo PATHS THAT ARE BEING COMPARED:
-echo.
-
-REM test if this checks if this confirms path given is a folder or if files also pass the test
-REM if exist "c:\folder\" echo folder exists 
-
-REM TODO TODO ---------- For checking folders recursive
-for /r %%i in (*) do echo %%i
 
 
 pause
