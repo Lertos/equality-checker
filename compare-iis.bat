@@ -235,7 +235,8 @@ REM SUBROUTINE TO COMPARE FILES
 :sr_compareFiles
     call :sr_resetError
 
-    if not %index% == 0 >NUL 2>&1 fc /c /w %previousFile% %1
+    if %ignoreWhiteSpaceIIS%==true if not %index% == 0 >NUL 2>&1 fc /c /w %previousFile% %1
+    if %ignoreWhiteSpaceIIS%==false if not %index% == 0 >NUL 2>&1 fc /c %previousFile% %1
     if errorlevel 1 ( goto :sr_filesAreDifferent )
     
     set /A index=index+1
