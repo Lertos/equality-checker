@@ -5,7 +5,7 @@ REM IIS Setup
 REM ----------------------------
 
 REM Whether white space is ignored when comparing
-set ignoreWhiteSpace=true
+set ignoreWhiteSpaceIIS=true
 
 REM Folder Prefixes - Have as many as you want. These will all be checked against each other
 REM Provide the different folder path UPTO the part of the path that's equal
@@ -24,7 +24,6 @@ set username=test
 set password=test123
 
 REM SQL Servers - Have as many as you want. These will all be checked against each other
-REM example: "sqlServers[0]=ServerDEV"
-set sqlServers[0]=ServerDEV
-set sqlServers[1]=ServerQUA
-set sqlServers[2]=ServerPRD
+set sqlServers=ServerDEV
+set sqlServers=%sqlServers%;ServerQUA
+set sqlServers=%sqlServers%;ServerPRD
